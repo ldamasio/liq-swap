@@ -21,7 +21,7 @@ const currencyConverter = async (req, res) => {
     res.json({ amount: convertedAmount, sourceCurrency, targetCurrency });
   } catch (error) {
     console.error('Erro na conversão de moeda:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Erro Interno do Servidor' });
   }
 };
 

@@ -1,0 +1,9 @@
+### Convert 100 USD to EUR
+POST http://localhost:3000/api/currency/convert
+Content-Type: application/json
+
+{
+  "amount": 100,
+  "sourceCurrency": "USD",
+  "targetCurrency": "EUR"
+}
