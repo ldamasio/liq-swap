@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const currencyRoutes = require('./src/routes/currencyRoutes');
+const routes = require('./src/routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/api/currency', currencyRoutes);
+app.use(routes);
 
 app.get('/', (req, res) => {
   res.send('Bem vindo a API Liqi Swap!');

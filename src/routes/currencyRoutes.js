@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { currencyConverter } = require('../controllers/currencyController');
+const { currencyConverterController, listSymbolsController } = require('../controllers/currencyController');
 
-router.post('/convert', currencyConverter);
+router.post('/convert', currencyConverterController);
+router.get('/symbols', listSymbolsController);
 
 module.exports = router;
