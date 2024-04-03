@@ -28,11 +28,12 @@ POST /api/currency/convert - Converte o valor de um montante de dinheiro em outr
 
 GET /api/currency/symbols - Lista todas as moedas
 
-## Exemplo:
+## Exemplo Conversão:
 
 Requisição:
 
-`POST http://localhost:3000/api/currency/convert
+```
+POST http://localhost:3000/api/currency/convert
 Content-Type: application/json
 
 {
@@ -40,11 +41,11 @@ Content-Type: application/json
   "sourceCurrency": "BRL",
   "targetCurrency": "USD"
 }
-`
+```
 
 Resposta:
 
-`
+```
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
@@ -58,10 +59,209 @@ Connection: close
   "sourceCurrency": "BRL",
   "targetCurrency": "USD"
 }
-`
+```
+
+
+## Exemplo Símbolos:
+
+Requisição:
+
+```
+GET http://localhost:3000/api/currency/symbols
+```
+
+Resposta: 
+```
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 985
+ETag: W/"3d9-Lx4A5plSe+mfAxgPB5hqCkewaMo"
+Date: Wed, 03 Apr 2024 16:40:52 GMT
+Connection: close
+
+{
+  "symbols": [
+    "USD",
+    "AED",
+    "AFN",
+    "ALL",
+    "AMD",
+    "ANG",
+    "AOA",
+    "ARS",
+    "AUD",
+    "AWG",
+    "AZN",
+    "BAM",
+    "BBD",
+    "BDT",
+    "BGN",
+    "BHD",
+    "BIF",
+    "BMD",
+    "BND",
+    "BOB",
+    "BRL",
+    "BSD",
+    "BTN",
+    "BWP",
+    "BYN",
+    "BZD",
+    "CAD",
+    "CDF",
+    "CHF",
+    "CLP",
+    "CNY",
+    "COP",
+    "CRC",
+    "CUP",
+    "CVE",
+    "CZK",
+    "DJF",
+    "DKK",
+    "DOP",
+    "DZD",
+    "EGP",
+    "ERN",
+    "ETB",
+    "EUR",
+    "FJD",
+    "FKP",
+    "FOK",
+    "GBP",
+    "GEL",
+    "GGP",
+    "GHS",
+    "GIP",
+    "GMD",
+    "GNF",
+    "GTQ",
+    "GYD",
+    "HKD",
+    "HNL",
+    "HRK",
+    "HTG",
+    "HUF",
+    "IDR",
+    "ILS",
+    "IMP",
+    "INR",
+    "IQD",
+    "IRR",
+    "ISK",
+    "JEP",
+    "JMD",
+    "JOD",
+    "JPY",
+    "KES",
+    "KGS",
+    "KHR",
+    "KID",
+    "KMF",
+    "KRW",
+    "KWD",
+    "KYD",
+    "KZT",
+    "LAK",
+    "LBP",
+    "LKR",
+    "LRD",
+    "LSL",
+    "LYD",
+    "MAD",
+    "MDL",
+    "MGA",
+    "MKD",
+    "MMK",
+    "MNT",
+    "MOP",
+    "MRU",
+    "MUR",
+    "MVR",
+    "MWK",
+    "MXN",
+    "MYR",
+    "MZN",
+    "NAD",
+    "NGN",
+    "NIO",
+    "NOK",
+    "NPR",
+    "NZD",
+    "OMR",
+    "PAB",
+    "PEN",
+    "PGK",
+    "PHP",
+    "PKR",
+    "PLN",
+    "PYG",
+    "QAR",
+    "RON",
+    "RSD",
+    "RUB",
+    "RWF",
+    "SAR",
+    "SBD",
+    "SCR",
+    "SDG",
+    "SEK",
+    "SGD",
+    "SHP",
+    "SLE",
+    "SLL",
+    "SOS",
+    "SRD",
+    "SSP",
+    "STN",
+    "SYP",
+    "SZL",
+    "THB",
+    "TJS",
+    "TMT",
+    "TND",
+    "TOP",
+    "TRY",
+    "TTD",
+    "TVD",
+    "TWD",
+    "TZS",
+    "UAH",
+    "UGX",
+    "UYU",
+    "UZS",
+    "VES",
+    "VND",
+    "VUV",
+    "WST",
+    "XAF",
+    "XCD",
+    "XDR",
+    "XOF",
+    "XPF",
+    "YER",
+    "ZAR",
+    "ZMW",
+    "ZWL"
+  ]
+}
+```
+
+# TESTES
+
+Para rodar testes, executar o comando:
+
+`npm test`
+
+Existem dois arquivos de testes, que usam a biblioteca Jest para executar 
+testes unitários sobre os Controllers de conversão de valores de moedas e 
+de listagem dos símbolos. 
 
 # DETALHAMENTOS OPERACIONAIS
 
 A justificativa para o uso da versão 4 é que ela permita realizar a consulta 
 necessária para o cálculo da conversão sem a necessidade de consumir créditos. 
+
+
 

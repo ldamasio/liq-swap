@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { currencyConverter } = require('../src/controllers/currencyController');
+const { currencyConverterController } = require('../src/controllers/currencyController');
 
 jest.mock('axios');
 
@@ -34,8 +34,8 @@ describe('Currency Conversion Controller', () => {
       json: jest.fn(),
     };
 
-    // Call the currencyConverter function with the mock request and response
-    await currencyConverter(req, res);
+    // Call the currencyConverterController function with the mock request and response
+    await currencyConverterController(req, res);
 
     // Assert that the axios.get function was called with the correct URL
     expect(axios.get).toHaveBeenCalledWith(
@@ -77,8 +77,8 @@ describe('Currency Conversion Controller', () => {
       json: jest.fn(),
     };
 
-    // Call the currencyConverter function with the mock request and response
-    await currencyConverter(req, res);
+    // Call the currencyConverterController function with the mock request and response
+    await currencyConverterController(req, res);
 
     // Assert that the axios.get function was called with the correct URL
     expect(axios.get).toHaveBeenCalledWith(
@@ -106,8 +106,8 @@ describe('Currency Conversion Controller', () => {
       json: jest.fn(),
     };
 
-    // Call the currencyConverter function with the mock request and response
-    await currencyConverter(req, res);
+    // Call the currencyConverterController function with the mock request and response
+    await currencyConverterController(req, res);
 
     // Assert that the response status is 400 (Bad Request)
     expect(res.status).toHaveBeenCalledWith(400);
@@ -139,8 +139,8 @@ describe('Currency Conversion Controller', () => {
     // Mock the axios.get function to throw an error
     axios.get.mockRejectedValueOnce(new Error('API Error'));
 
-    // Call the currencyConverter function with the mock request and response
-    await currencyConverter(req, res);
+    // Call the currencyConverterController function with the mock request and response
+    await currencyConverterController(req, res);
 
     // Assert that the axios.get function was called with the correct URL
     expect(axios.get).toHaveBeenCalledWith(
@@ -157,3 +157,4 @@ describe('Currency Conversion Controller', () => {
   });
 
 });
+
