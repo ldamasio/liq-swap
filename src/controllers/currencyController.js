@@ -29,19 +29,16 @@ const listSymbolsController = async (req, res) => {
     try {
         const response = await axios.get('https://api.exchangerate-api.com/v4/latest/USD');
 
-        if (response) {
-            console.log('oiee')
-            res.status(200).json({'o':'ie'})
-            // const symbols = response.data.symbols;
-            // const symbolList = Object.keys(symbols);
+        if (response && response.data && response.data.rates) {
+            const currencySymbols = Object.keys(response.data.rates);
 
-            // res.json({ symbols: symbolList });
+            res.status(200).json({ symbols: currencySymbols });
         } else {
-            throw new Error('Falha ao buscar símbolos de moeda');
+            throw new Error('Failed to fetch currency symbols');
         }
     } catch (error) {
         console.error('Error fetching currency symbols:', error);
-        res.status(500).json({ error: 'Erro Interno do Servidor' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 

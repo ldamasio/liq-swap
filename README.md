@@ -14,6 +14,7 @@ cotação atual, utilizando a versão 4 da Exchange Rate API.
 # CARACTERÍSTICAS TÉCNICAS
 
 Versão do Node: 18
+Versão da API Exchange Rate: 4
 
 # INSTALAÇÃO
 
@@ -59,4 +60,8 @@ Connection: close
 }
 `
 
+# DETALHAMENTOS OPERACIONAIS
+
+A justificativa para o uso da versão 4 é que ela permita realizar a consulta 
+necessária para o cálculo da conversão sem a necessidade de consumir créditos. 
 
