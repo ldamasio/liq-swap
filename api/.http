@@ -1,0 +1,14 @@
+## Convert 100 USD to EUR
+POST http://localhost:3000/api/currency/convert
+Content-Type: application/json
+
+{
+  "amount": 100,
+  "sourceCurrency": "BRL",
+  "targetCurrency": "USD"
+}
+
+# GET http://localhost:3000/api/currency/symbols
+
+# GET https://api.exchangerate-api.com/v4/latest/USD
+
