@@ -1,4 +1,4 @@
-# More information about the configuration file can be found here:
+# Mais informações sobre o arquivo de configuração podem ser encontradas aqui:
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
 version = 0.1
 
@@ -29,3 +29,11 @@ warm_containers = "EAGER"
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
+
+# Adicione os caminhos dos arquivos das funções Lambda
+[default.lambda_handler_paths]
+  # Função Lambda para a API Gateway
+  createUserController = "createUserController.handler"
+
+  # Função Lambda para o SQS
+  sqsLambdaHandler = "sqsLambdaHandler.handler"

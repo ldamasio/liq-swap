@@ -2,118 +2,104 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   liq-convert
 Transform:
-- AWS::Serverless-2016-10-31
+  - AWS::Serverless-2016-10-31
 
-# Resources declares the AWS resources that you want to include in the stack
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-
-  # This is a Lambda function config associated with the source code: get-all-items.js
-  getAllItemsFunction:
+  # Função Lambda para a API Gateway
+  CreateUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-all-items.getAllItemsHandler
-      Runtime: nodejs18.x
-      Architectures:
-      - x86_64
-      MemorySize: 128
-      Timeout: 100
-      Description: A simple example includes a HTTP get method to get all items from
-        a DynamoDB table.
-      Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
-      - DynamoDBCrudPolicy:
-          TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref SampleTable
+      Handler: createUserController.handler
+      Runtime: nodejs14.x
       Events:
-        Api:
+        CreateUserApi:
           Type: Api
           Properties:
-            Path: /
-            Method: GET
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-
-  # This is a Lambda function config associated with the source code: get-by-id.js
-  getByIdFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: src/handlers/get-by-id.getByIdHandler
-      Runtime: nodejs18.x
-      Architectures:
-      - x86_64
-      MemorySize: 128
-      Timeout: 100
-      Description: A simple example includes a HTTP get method to get one item by
-        id from a DynamoDB table.
-      Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
-      - DynamoDBCrudPolicy:
-          TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref SampleTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            Path: /{id}
-            Method: GET
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-
-  # This is a Lambda function config associated with the source code: put-item.js
-  putItemFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: src/handlers/put-item.putItemHandler
-      Runtime: nodejs18.x
-      Architectures:
-      - x86_64
-      MemorySize: 128
-      Timeout: 100
-      Description: A simple example includes a HTTP post method to add one item to
-        a DynamoDB table.
-      Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
-      - DynamoDBCrudPolicy:
-          TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref SampleTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            Path: /
+            Path: /createUser
             Method: POST
-  # Simple syntax to create a DynamoDB table with a single attribute primary key, more in
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable
 
-  # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
-  SampleTable:
-    Type: AWS::Serverless::SimpleTable
+  # Função Lambda para ser acionada pelo SQS e enviar dados para o EventBridge
+  SQSLambdaFunction:
+    Type: AWS::Serverless::Function
     Properties:
-      PrimaryKey:
-        Name: id
-        Type: String
+      Handler: sqsLambdaHandler.handler
+      Runtime: nodejs14.x
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt MySQSQueue.Arn
+
+  # Definição da fila SQS
+  MySQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: MySQSQueue
+
+  # Definição da API Gateway
+  MyApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        openapi: "3.0.0"
+        info:
+          title: My API
+          version: "1.0"
+        paths:
+          /createUser:
+            post:
+              x-amazon-apigateway-integration:
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateUserFunction.Arn}/invocations"
+                httpMethod: POST
+                type: aws_proxy
+
+  # Definição da regra do EventBridge
+  MyEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: My Event Rule
+      EventPattern:
+        source:
+          - "aws.sqs"
+        detail-type:
+          - "Scheduled Event"
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt SQSLambdaFunction.Arn
+          Id: MyTarget
+
+  # Tabela DynamoDB para armazenar usuários
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: user
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
       ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
 
 Outputs:
-  WebEndpoint:
-    Description: API Gateway endpoint URL for Prod stage
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+  # URL da API Gateway para a função CreateUserFunction
+  CreateUserApiUrl:
+    Description: URL da API Gateway para acionar a função CreateUserFunction
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/createUser"
+
+  # ARN da fila SQS para a função SQSLambdaFunction
+  SQSQueueArn:
+    Description: ARN da fila SQS para acionar a função SQSLambdaFunction
+    Value: !GetAtt MySQSQueue.Arn
+
+  # ARN da tabela DynamoDB para referência
+  UsersTableArn:
+    Description: ARN da tabela DynamoDB para referência
+    Value: !GetAtt UsersTable.Arn
+
 Globals:
   Function:
-    LoggingConfig:
-      LogFormat: JSON
+    Timeout: 10
