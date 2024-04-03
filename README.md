@@ -258,6 +258,14 @@ Existem dois arquivos de testes, que usam a biblioteca Jest para executar
 testes unitários sobre os Controllers de conversão de valores de moedas e 
 de listagem dos símbolos. 
 
+Lista de Testes:
+1. should return converted amount and currencies
+2. should return error for invalid currency
+3. should return error for missing parameters
+4. should return error for API failure
+5. should return list of currency symbols
+6. should handle error when fetching currency symbols
+
 # DETALHAMENTOS OPERACIONAIS
 
 A justificativa para o uso da versão 4 é que ela permita realizar a consulta 
