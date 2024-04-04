@@ -1,6 +1,6 @@
 # liq-swap
 
-# FUNCIONALIDADES
+## FUNCIONALIDADES
 
 A API Liqi Swap 1.0 vem suprir a demanda por cotações monetárias.
 
@@ -11,24 +11,24 @@ A documentação apresenta todos os símbolos de moedas disponíveis.
 Com a API Liqi Swap você pode converter os valores de moedas com base na 
 cotação atual, utilizando a versão 4 da Exchange Rate API.
 
-# CARACTERÍSTICAS TÉCNICAS
+## CARACTERÍSTICAS TÉCNICAS
 
 Versão do Node: 18
 Versão da API Exchange Rate: 4
 
-# INSTALAÇÃO
+## INSTALAÇÃO
 
 nvm use 18
 npm i
 node server.js
 
-# ROTAS
+## ROTAS
 
 POST /api/currency/convert - Converte o valor de um montante de dinheiro em outra moeda.
 
 GET /api/currency/symbols - Lista todas as moedas
 
-## Exemplo Conversão:
+### Exemplo Conversão:
 
 Requisição:
 
@@ -62,7 +62,7 @@ Connection: close
 ```
 
 
-## Exemplo Símbolos:
+### Exemplo Símbolos:
 
 Requisição:
 
@@ -93,7 +93,7 @@ Connection: close
 }
 ```
 
-# TESTES
+## TESTES
 
 Para rodar testes, executar o comando:
 
@@ -111,7 +111,7 @@ Lista de Testes:
 5. should return list of currency symbols
 6. should handle error when fetching currency symbols
 
-# DETALHAMENTOS OPERACIONAIS
+## DETALHAMENTOS OPERACIONAIS
 
 A justificativa para o uso da versão 4 é que ela permita realizar a consulta 
 necessária para o cálculo da conversão sem a necessidade de consumir créditos. 
