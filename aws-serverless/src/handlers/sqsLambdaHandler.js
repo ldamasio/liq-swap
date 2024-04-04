@@ -1,43 +1,42 @@
-const AWS = require('aws-sdk');
+const { PutEventsCommand } = require("@aws-sdk/client-eventbridge");
 
-exports.handler = async (event) => {
+async function sqsLambdaHandler(event) {
+    let processedEvents = 0;
+    let failedEvents = 0;
+
     try {
-        // Extrai os dados recebidos do evento do SQS
-        const { Records } = event;
-        
-        // Configura o cliente do Amazon EventBridge
-        const eventBridge = new AWS.EventBridge();
-        
-        // Para cada registro no evento do SQS
-        for (const record of Records) {
-            try {
-                const { body } = record;
-                
-                // Parse do corpo da mensagem SQS (se for JSON)
-                const eventData = JSON.parse(body);
-                
-                // Enviar os dados para o EventBridge
-                const params = {
-                    Entries: [
-                        {
-                            Source: 'CustomSource',
-                            DetailType: 'CustomDetailType',
-                            Detail: JSON.stringify(eventData),
-                            EventBusName: 'default'
-                        }
-                    ]
-                };
-                
-                await eventBridge.putEvents(params).promise();
-            } catch (error) {
-                console.error('Erro ao processar registro do SQS:', error);
-            }
-        }
-        
-        return { statusCode: 200, body: 'Dados enviados para o EventBridge com sucesso!' };
-    } catch (error) {
-        console.error('Erro ao processar evento do SQS:', error);
-        return { statusCode: 500, body: 'Erro ao processar evento do SQS' };
-    }
-};
+        for (const record of event.Records) {
+            const { body } = record;
 
+            // Process the SQS record
+            const parsedBody = JSON.parse(body);
+
+            // Simulate sending to EventBridge
+            await PutEventsCommand({
+                Entries: [
+                    {
+                        Detail: JSON.stringify(parsedBody),
+                        DetailType: "CustomDetailType",
+                        EventBusName: "default",
+                        Source: "CustomSource"
+                    }
+                ]
+            });
+
+            processedEvents++;
+        }
+
+        return {
+            statusCode: 200,
+            body: `Processed ${processedEvents} events, failed ${failedEvents} events.`
+        };
+    } catch (error) {
+        console.error('Error processing SQS record:', error);
+        return {
+            statusCode: 500,
+            body: 'Error processing SQS event'
+        };
+    }
+}
+
+module.exports = { sqsLambdaHandler };
