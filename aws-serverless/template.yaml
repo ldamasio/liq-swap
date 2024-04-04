@@ -9,21 +9,23 @@ Resources:
   CreateUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: createUserController.handler
-      Runtime: nodejs14.x
+      Handler: src/handlers/createUserController.handler
+      Runtime: nodejs18.x
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref UserTable
       Events:
         CreateUserApi:
           Type: Api
           Properties:
             Path: /createUser
             Method: POST
-
   # Função Lambda para ser acionada pelo SQS e enviar dados para o EventBridge
   SQSLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: sqsLambdaHandler.handler
-      Runtime: nodejs14.x
+      Handler: src/handlers/sqsLambdaHandler.handler
+      Runtime: nodejs18.x
       Events:
         SQSEvent:
           Type: SQS
@@ -44,7 +46,7 @@ Resources:
       DefinitionBody:
         openapi: "3.0.0"
         info:
-          title: My API
+          title: Liqi Convert API
           version: "1.0"
         paths:
           /createUser:
@@ -58,12 +60,12 @@ Resources:
   MyEventRule:
     Type: AWS::Events::Rule
     Properties:
-      Description: My Event Rule
+      Description: Liqi Convert Event Rule
       EventPattern:
         source:
           - "aws.sqs"
         detail-type:
-          - "Scheduled Event"
+          - "SQS Message"
       State: ENABLED
       Targets:
         - Arn: !GetAtt SQSLambdaFunction.Arn
@@ -73,7 +75,7 @@ Resources:
   UserTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: user
+      TableName: UserTable
       AttributeDefinitions:
         - AttributeName: userId
           AttributeType: S
@@ -98,7 +100,7 @@ Outputs:
   # ARN da tabela DynamoDB para referência
   UsersTableArn:
     Description: ARN da tabela DynamoDB para referência
-    Value: !GetAtt UsersTable.Arn
+    Value: !GetAtt UserTable.Arn
 
 Globals:
   Function:

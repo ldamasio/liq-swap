@@ -40,3 +40,4 @@ exports.handler = async (event) => {
         return { statusCode: 500, body: 'Erro ao processar evento do SQS' };
     }
 };
+

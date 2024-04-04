@@ -1,0 +1,11 @@
+POST http://localhost:3000/createUser
+Content-Type: application/json
+
+{
+    "email": "teste@example.com", 
+    "password": "senha",
+    "payload": {"name": "Leandro"}
+}
+
+
+
